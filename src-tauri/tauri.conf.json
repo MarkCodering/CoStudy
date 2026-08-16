@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "CoStudy",
+  "productName": "Marginalia",
   "version": "0.1.0",
-  "identifier": "dev.mindifyai.costudy",
+  "identifier": "dev.mindifyai.marginalia",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "CoStudy — Exam Practice",
+        "title": "Marginalia — Exam Practice",
         "width": 1360,
         "height": 860,
         "minWidth": 960,
