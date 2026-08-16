@@ -19,11 +19,6 @@ a:hover {
   text-decoration: underline;
 }
 
-@keyframes examPulse {
-  0%, 100% { opacity: .35; }
-  50% { opacity: 1; }
-}
-
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: #d7d3d3; border-radius: 6px; }
 

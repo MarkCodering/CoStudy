@@ -1,0 +1,20 @@
+{"ts":"2026-08-16T04:47:10.013Z","cmd":"viewport","args":"1440x900","origin":"about:blank","durationMs":346,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:47:12.554Z","cmd":"screenshot","args":"/tmp/costudy-library.png","origin":"about:blank","durationMs":1202,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:47:32.659Z","cmd":"console","args":"","origin":"about:blank","durationMs":275,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:47:33.524Z","cmd":"text","args":"","origin":"about:blank","durationMs":101,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:47:34.163Z","cmd":"url","args":"","origin":"about:blank","durationMs":1,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:48:29.984Z","cmd":"goto","args":"http://localhost:3000","origin":"http://localhost:3000/","durationMs":8407,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:48:34.786Z","cmd":"url","args":"","origin":"http://localhost:3000/","durationMs":55,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:48:39.392Z","cmd":"viewport","args":"1440x900","origin":"http://localhost:3000/","durationMs":567,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T04:48:42.392Z","cmd":"screenshot","args":"/tmp/costudy-library.png","origin":"http://localhost:3000/","durationMs":1602,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:03:44.329Z","cmd":"goto","args":"http://localhost:3000","origin":"http://localhost:3000/","durationMs":554,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:03:44.823Z","cmd":"screenshot","args":"/tmp/costudy-empty-library.png","origin":"http://localhost:3000/","durationMs":101,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:01.180Z","cmd":"click","args":"text=Add a paper","origin":"http://localhost:3000/","durationMs":73,"status":"error","hasCookies":false,"mode":"launched","error":"click: Error: strict mode violation: locator('text=Add a paper') resolved to 2 elements:\n    1) <span>Add a paper</span> aka getByRole('navigation').getByRole('button', { name: 'Add a paper' })\n    2) <button class=\"btn btn-primary\">Add a paper</button> aka getByRole('main').getByRole('button', { na…"}
+{"ts":"2026-08-16T05:04:01.241Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":17,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:09.291Z","cmd":"click","args":"@e4","origin":"http://localhost:3000/","durationMs":326,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:09.388Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":18,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:19.173Z","cmd":"fill","args":"@e11 Vector Calculus · Final 2023","origin":"http://localhost:3000/","durationMs":401,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:19.393Z","cmd":"fill","args":"@e12 MATH 2410","origin":"http://localhost:3000/","durationMs":10,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:19.578Z","cmd":"snapshot","args":"-i -d 0","origin":"http://localhost:3000/","durationMs":23,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:19.639Z","cmd":"click","args":"@e15","origin":"http://localhost:3000/","durationMs":0,"status":"error","hasCookies":false,"mode":"launched","error":"Ref @e15 not found. Run 'snapshot' to get fresh refs."}
+{"ts":"2026-08-16T05:04:19.770Z","cmd":"screenshot","args":"/tmp/costudy-question-editor.png","origin":"http://localhost:3000/","durationMs":70,"status":"ok","hasCookies":false,"mode":"launched"}

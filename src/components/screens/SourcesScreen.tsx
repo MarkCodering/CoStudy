@@ -32,7 +32,7 @@ export function SourcesScreen({ state }: { state: ExamPracticeState }) {
           />
         </div>
         <div className="field">
-          <label>Source (course, chapter, notes — whatever it's drawn from)</label>
+          <label>Source (course, chapter, notes — whatever it&rsquo;s drawn from)</label>
           <input
             className="input"
             value={course}

@@ -6,7 +6,7 @@ import type { ExamPracticeState } from "@/hooks/useExamPractice";
 import { totalMarks as sumMarks } from "@/lib/models";
 
 export function GradedScreen({ state }: { state: ExamPracticeState }) {
-  const { activePaper, go, markDraft, setMarkScore, setMarkNote, saveMarksAction, reopenMarking, remarking } = state;
+  const { activePaper, go, draftFor, setMarkScore, setMarkNote, saveMarksAction, reopenMarking, remarking } = state;
 
   if (!activePaper) {
     return (
@@ -53,7 +53,7 @@ export function GradedScreen({ state }: { state: ExamPracticeState }) {
         </p>
 
         {activePaper.questions.map((q) => {
-          const draft = markDraft[q.id] ?? { score: "", note: "" };
+          const draft = draftFor(q);
           return (
             <div key={q.id} style={{ borderBottom: "1px solid var(--color-divider)", padding: "24px 0" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
@@ -77,7 +77,7 @@ export function GradedScreen({ state }: { state: ExamPracticeState }) {
                       min={0}
                       max={q.marks}
                       value={draft.score}
-                      onChange={(e) => setMarkScore(q.id, e.target.value)}
+                      onChange={(e) => setMarkScore(q, e.target.value)}
                       style={{ width: 120 }}
                     />
                   </div>
@@ -86,7 +86,7 @@ export function GradedScreen({ state }: { state: ExamPracticeState }) {
                     <textarea
                       className="input"
                       value={draft.note}
-                      onChange={(e) => setMarkNote(q.id, e.target.value)}
+                      onChange={(e) => setMarkNote(q, e.target.value)}
                       placeholder="e.g. wrong moment of inertia — used the centre, not the pivot"
                       style={{ minHeight: 70, fontSize: 13 }}
                     />

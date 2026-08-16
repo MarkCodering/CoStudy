@@ -52,10 +52,10 @@ function snapshot() {
   return papers;
 }
 
+const EMPTY: PaperRecord[] = [];
 function serverSnapshot() {
   return EMPTY;
 }
-const EMPTY: PaperRecord[] = [];
 
 /** Live-updating list of every paper the user has created, newest first. */
 export function usePapers(): PaperRecord[] {

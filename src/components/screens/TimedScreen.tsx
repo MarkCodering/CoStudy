@@ -1,25 +1,95 @@
 "use client";
 
+import { useState } from "react";
+import { EmptyState } from "@/components/EmptyState";
 import { Rich } from "@/components/Rich";
 import type { ExamPracticeState } from "@/hooks/useExamPractice";
+import { totalMarks } from "@/lib/models";
+import type { PaperRecord } from "@/lib/models";
 
 export function TimedScreen({ state }: { state: ExamPracticeState }) {
-  const {
-    workList,
-    timedIdx,
-    setTimedIdx,
-    clock,
-    timing,
-    toggleTimer,
-    grade,
-    answerOf,
-    setAnswer,
-    prevQ,
-    nextQ,
-    practice,
-  } = state;
+  const { papers, timedActive, activePaper, go } = state;
 
-  const tq = workList[timedIdx];
+  const eligible = papers.filter((p) => p.questions.length > 0);
+
+  if (!timedActive || !activePaper) {
+    if (eligible.length === 0) {
+      return (
+        <EmptyState
+          eyebrow="Exam conditions"
+          title="No papers ready"
+          body="Add questions to a paper first, then come back here to sit it against the clock."
+          action={
+            <button className="btn btn-primary" onClick={() => go("upload")}>
+              Add a paper
+            </button>
+          }
+        />
+      );
+    }
+    return <TimedSetup state={state} eligible={eligible} />;
+  }
+
+  return <TimedRunning state={state} paper={activePaper} />;
+}
+
+function TimedSetup({ state, eligible }: { state: ExamPracticeState; eligible: PaperRecord[] }) {
+  const { startTimed } = state;
+  const [paperId, setPaperId] = useState(eligible[0].id);
+  const paper = eligible.find((p) => p.id === paperId) ?? eligible[0];
+  const [minutes, setMinutes] = useState(() => Math.max(15, Math.round(totalMarks(paper) * 1.5)));
+
+  return (
+    <div style={{ maxWidth: 560, padding: "38px 46px 60px" }}>
+      <div style={{ fontSize: 9.5, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--color-accent)" }}>
+        Exam conditions
+      </div>
+      <h2 style={{ margin: "6px 0 4px", fontWeight: 400, fontSize: 36 }}>Sit a paper</h2>
+      <p style={{ color: "var(--color-neutral-700)", marginBottom: 24, fontSize: 13.5 }}>
+        Pick a paper and a time limit. Topic tags and previews are hidden while the clock runs, same as the real
+        thing.
+      </p>
+
+      <div className="field">
+        <label>Paper</label>
+        <select
+          className="input"
+          value={paperId}
+          onChange={(e) => {
+            setPaperId(e.target.value);
+            const p = eligible.find((x) => x.id === e.target.value);
+            if (p) setMinutes(Math.max(15, Math.round(totalMarks(p) * 1.5)));
+          }}
+        >
+          {eligible.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.title} · {p.questions.length} questions
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="field" style={{ marginTop: 16 }}>
+        <label>Minutes</label>
+        <input
+          className="input"
+          type="number"
+          min={1}
+          value={minutes}
+          onChange={(e) => setMinutes(Math.max(1, Math.round(Number(e.target.value) || 0)))}
+          style={{ width: 120 }}
+        />
+      </div>
+
+      <button className="btn btn-primary btn-block" style={{ marginTop: 22 }} onClick={() => startTimed(paper, minutes)}>
+        Start
+      </button>
+    </div>
+  );
+}
+
+function TimedRunning({ state, paper }: { state: ExamPracticeState; paper: PaperRecord }) {
+  const { timedIdx, setTimedIdx, clock, timing, toggleTimer, finishTimed, setAnswerFor, prevQ, nextQ } = state;
+  const tq = paper.questions[Math.min(timedIdx, paper.questions.length - 1)];
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-neutral-100)", display: "flex", flexDirection: "column" }}>
@@ -37,13 +107,11 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
           <div style={{ fontSize: 9.5, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--color-accent)" }}>
             Exam conditions
           </div>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: 19 }}>
-            {practice ? "Practice set B" : "Vector Calculus · Final 2023"}
-          </div>
+          <div style={{ fontFamily: "var(--font-heading)", fontSize: 19 }}>{paper.title}</div>
         </div>
         <div style={{ flex: 1 }} />
         <div style={{ display: "flex", gap: 5 }}>
-          {workList.map((q, i) => (
+          {paper.questions.map((q, i) => (
             <button
               key={q.id}
               onClick={() => setTimedIdx(i)}
@@ -57,8 +125,8 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
                 fontVariantNumeric: "tabular-nums",
                 fontFamily: "var(--font-body)",
                 border: "1px solid " + (i === timedIdx ? "var(--color-accent)" : "var(--color-divider)"),
-                color: i === timedIdx ? "var(--color-accent-800)" : answerOf(q.id) ? "var(--color-text)" : "var(--color-neutral-500)",
-                background: answerOf(q.id) ? "var(--color-accent-100)" : "transparent",
+                color: i === timedIdx ? "var(--color-accent-800)" : q.answer ? "var(--color-text)" : "var(--color-neutral-500)",
+                background: q.answer ? "var(--color-accent-100)" : "transparent",
               }}
             >
               {i + 1}
@@ -76,7 +144,7 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
         <button className="btn btn-secondary" onClick={toggleTimer}>
           {timing ? "Pause" : "Resume"}
         </button>
-        <button className="btn btn-primary" onClick={grade}>
+        <button className="btn btn-primary" onClick={finishTimed}>
           Hand in
         </button>
       </div>
@@ -94,7 +162,7 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid var(--color-divider)", paddingBottom: 14 }}>
-            <span style={{ fontFamily: "var(--font-heading)", fontSize: 20 }}>{tq.label}</span>
+            <span style={{ fontFamily: "var(--font-heading)", fontSize: 20 }}>Question {tq.num}</span>
             <span style={{ fontSize: 11.5, color: "var(--color-neutral-600)", fontVariantNumeric: "tabular-nums" }}>{tq.marks} marks</span>
             <span style={{ flex: 1 }} />
             <span style={{ fontSize: 11.5, color: "var(--color-neutral-600)" }}>Topic hidden until you hand in</span>
@@ -102,8 +170,8 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
           <Rich text={tq.prompt} style={{ fontSize: 16, lineHeight: 1.75, margin: "20px 0 22px", maxWidth: "70ch" }} />
           <textarea
             className="input"
-            value={answerOf(tq.id)}
-            onChange={(e) => setAnswer(tq.id, e.target.value)}
+            value={tq.answer}
+            onChange={(e) => setAnswerFor(tq.id, e.target.value)}
             placeholder="Working…"
             style={{ minHeight: 300, fontFamily: "ui-monospace,Menlo,monospace", fontSize: 13, lineHeight: 1.75 }}
           />
@@ -115,7 +183,7 @@ export function TimedScreen({ state }: { state: ExamPracticeState }) {
               Next
             </button>
             <span style={{ flex: 1 }} />
-            <span style={{ fontSize: 12, color: "var(--color-neutral-600)" }}>Preview and AI help are off in exam mode.</span>
+            <span style={{ fontSize: 12, color: "var(--color-neutral-600)" }}>Preview is off in exam mode.</span>
           </div>
         </div>
       </div>

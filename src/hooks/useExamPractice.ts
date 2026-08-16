@@ -37,8 +37,15 @@ export function useExamPractice() {
   const [screen, setScreen] = useState<Screen>("library");
   const [activePaperId, setActivePaperId] = useState<string | null>(null);
   const activePaper = usePaper(activePaperId) ?? null;
+  // Whether the Graded screen shows its editable marking form even though
+  // the paper already has a gradedAt stamp — set by reopenMarking(), reset
+  // whenever navigation leaves the graded screen.
+  const [remarking, setRemarking] = useState(false);
 
-  const go = useCallback((next: Screen) => setScreen(next), []);
+  const go = useCallback((next: Screen) => {
+    setScreen(next);
+    if (next !== "graded") setRemarking(false);
+  }, []);
 
   const openPaper = useCallback(
     (paper: PaperRecord) => {
@@ -135,47 +142,41 @@ export function useExamPractice() {
   );
 
   // — Marking (self-graded, no simulated AI) —
+  // `markDraft` holds only the fields the user has actually edited this
+  // session; draftFor() falls back to the question's own score/note, so
+  // there's no need to pre-seed it on mount (which would mean calling
+  // setState from inside an effect).
   const [markDraft, setMarkDraft] = useState<Record<string, { score: string; note: string }>>({});
-  const beginMarking = useCallback((paper: PaperRecord) => {
-    const draft: Record<string, { score: string; note: string }> = {};
-    for (const q of paper.questions) {
-      draft[q.id] = { score: q.score != null ? String(q.score) : "", note: q.note ?? "" };
-    }
-    setMarkDraft(draft);
-  }, []);
-  useEffect(() => {
-    if (screen === "graded" && activePaper && !activePaper.gradedAt) beginMarking(activePaper);
-    // Re-seed the draft whenever we land on an ungraded paper's marking view.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [screen, activePaperId]);
-  const setMarkScore = useCallback((id: string, score: string) => {
-    setMarkDraft((d) => ({ ...d, [id]: { ...(d[id] ?? { score: "", note: "" }), score } }));
-  }, []);
-  const setMarkNote = useCallback((id: string, note: string) => {
-    setMarkDraft((d) => ({ ...d, [id]: { ...(d[id] ?? { score: "", note: "" }), note } }));
-  }, []);
-  const [remarking, setRemarking] = useState(false);
-  useEffect(() => {
-    if (screen !== "graded") setRemarking(false);
-  }, [screen]);
+  const draftFor = useCallback(
+    (q: QuestionRecord) => markDraft[q.id] ?? { score: q.score != null ? String(q.score) : "", note: q.note ?? "" },
+    [markDraft]
+  );
+  const setMarkScore = useCallback(
+    (q: QuestionRecord, score: string) => {
+      setMarkDraft((d) => ({ ...d, [q.id]: { ...draftFor(q), score } }));
+    },
+    [draftFor]
+  );
+  const setMarkNote = useCallback(
+    (q: QuestionRecord, note: string) => {
+      setMarkDraft((d) => ({ ...d, [q.id]: { ...draftFor(q), note } }));
+    },
+    [draftFor]
+  );
   const saveMarksAction = useCallback(() => {
     if (!activePaperId || !activePaper) return;
     for (const q of activePaper.questions) {
-      const draft = markDraft[q.id];
-      const score = Math.max(0, Math.min(q.marks, Math.round(Number(draft?.score) || 0)));
-      updateQuestion(activePaperId, q.id, { score, note: draft?.note?.trim() || undefined });
+      const draft = draftFor(q);
+      const score = Math.max(0, Math.min(q.marks, Math.round(Number(draft.score) || 0)));
+      updateQuestion(activePaperId, q.id, { score, note: draft.note.trim() || undefined });
     }
     saveMarks(activePaperId);
     setRemarking(false);
-  }, [activePaperId, activePaper, markDraft]);
-  // The store never "un-grades" a paper — re-marking just re-seeds the
-  // input draft and flips a local flag so the screen shows the editable
-  // form again; saving overwrites the previous marks and gradedAt stamp.
-  const reopenMarking = useCallback(() => {
-    if (!activePaper) return;
-    beginMarking(activePaper);
-    setRemarking(true);
-  }, [activePaper, beginMarking]);
+  }, [activePaperId, activePaper, draftFor]);
+  // The store never "un-grades" a paper — re-marking just flips a local
+  // flag so the screen shows the editable form again; saving overwrites
+  // the previous marks and gradedAt stamp.
+  const reopenMarking = useCallback(() => setRemarking(true), []);
 
   // — Timed (exam conditions) —
   const [timedIdx, setTimedIdx] = useState(0);
@@ -237,7 +238,7 @@ export function useExamPractice() {
     showPreviewTab,
     setAnswerFor,
     insertSnippet,
-    markDraft,
+    draftFor,
     setMarkScore,
     setMarkNote,
     saveMarksAction,
