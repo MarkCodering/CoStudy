@@ -18,3 +18,29 @@
 {"ts":"2026-08-16T05:04:19.578Z","cmd":"snapshot","args":"-i -d 0","origin":"http://localhost:3000/","durationMs":23,"status":"ok","hasCookies":false,"mode":"launched"}
 {"ts":"2026-08-16T05:04:19.639Z","cmd":"click","args":"@e15","origin":"http://localhost:3000/","durationMs":0,"status":"error","hasCookies":false,"mode":"launched","error":"Ref @e15 not found. Run 'snapshot' to get fresh refs."}
 {"ts":"2026-08-16T05:04:19.770Z","cmd":"screenshot","args":"/tmp/costudy-question-editor.png","origin":"http://localhost:3000/","durationMs":70,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:28.784Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":73,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:38.728Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":70,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:47.625Z","cmd":"click","args":"@e15","origin":"http://localhost:3000/","durationMs":251,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:04:47.736Z","cmd":"screenshot","args":"/tmp/costudy-question-editor.png","origin":"http://localhost:3000/","durationMs":58,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:02.360Z","cmd":"click","args":"text=+ Add question","origin":"http://localhost:3000/","durationMs":291,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:02.435Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":15,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:12.134Z","cmd":"fill","args":"@e10 1","origin":"http://localhost:3000/","durationMs":248,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:12.581Z","cmd":"fill","args":"@e11 Green's theorem","origin":"http://localhost:3000/","durationMs":53,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:12.741Z","cmd":"fill","args":"@e12 8","origin":"http://localhost:3000/","durationMs":47,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:13.120Z","cmd":"fill","args":"@e13 Evaluate $$\\oint_C (y^2\\,dx + 3xy\\,dy)$$ where $C$ is the unit circle.","origin":"http://localhost:3000/","durationMs":152,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:13.350Z","cmd":"screenshot","args":"/tmp/costudy-question-form.png","origin":"http://localhost:3000/","durationMs":140,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:28.162Z","cmd":"click","args":"text=Save question","origin":"http://localhost:3000/","durationMs":291,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:28.370Z","cmd":"click","args":"text=Open in notebook","origin":"http://localhost:3000/","durationMs":70,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:28.487Z","cmd":"screenshot","args":"/tmp/costudy-notebook.png","origin":"http://localhost:3000/","durationMs":72,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:43.640Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":91,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:43.825Z","cmd":"click","args":"textarea","origin":"http://localhost:3000/","durationMs":122,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:44.213Z","cmd":"type","args":"By Green's theorem, this reduces to $$\\iint_A y\\,dA = 0$$ by symmetry.","origin":"http://localhost:3000/","durationMs":337,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:44.312Z","cmd":"click","args":"text=Mark this paper","origin":"http://localhost:3000/","durationMs":30,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:05:44.484Z","cmd":"screenshot","args":"/tmp/costudy-marking.png","origin":"http://localhost:3000/","durationMs":125,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:00.867Z","cmd":"snapshot","args":"-i","origin":"http://localhost:3000/","durationMs":79,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:09.457Z","cmd":"fill","args":"@e10 5","origin":"http://localhost:3000/","durationMs":160,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:09.525Z","cmd":"fill","args":"@e11 Dropped the sin(theta) factor in the angular integral — should be 0 by odd symmetry, not 15pi.","origin":"http://localhost:3000/","durationMs":17,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:09.647Z","cmd":"click","args":"@e12","origin":"http://localhost:3000/","durationMs":68,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:09.744Z","cmd":"screenshot","args":"/tmp/costudy-graded.png","origin":"http://localhost:3000/","durationMs":51,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:23.917Z","cmd":"click","args":"text=Where am I weak?","origin":"http://localhost:3000/","durationMs":320,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-08-16T05:06:24.040Z","cmd":"screenshot","args":"/tmp/costudy-weakness.png","origin":"http://localhost:3000/","durationMs":66,"status":"ok","hasCookies":false,"mode":"launched"}

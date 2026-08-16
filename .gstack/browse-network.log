@@ -73,3 +73,7 @@
 [2026-08-16T05:03:44.633Z] GET http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js → 200 (66ms, 15615B)
 [2026-08-16T05:03:44.685Z] GET http://localhost:3000/__nextjs_font/geist-latin.woff2 → 200 (?ms, ?B)
 [2026-08-16T05:03:44.685Z] GET http://localhost:3000/__nextjs_font/geist-mono-latin.woff2 → 200 (?ms, ?B)
+[2026-08-16T05:05:13.130Z] GET http://localhost:3000/_next/static/media/KaTeX_Math-Italic.32405s1aq8vas.woff2 → 200 (138ms, 16440B)
+[2026-08-16T05:05:13.130Z] GET http://localhost:3000/_next/static/media/KaTeX_Size2-Regular.14s5gg-puz6h-.woff2 → 200 (156ms, 5208B)
+[2026-08-16T05:05:13.130Z] GET http://localhost:3000/_next/static/media/KaTeX_Main-Regular.1ryvsdzh2w1_e.woff2 → 200 (144ms, 26272B)
+[2026-08-16T05:05:44.184Z] GET http://localhost:3000/_next/static/media/KaTeX_Size1-Regular.03lhvx36ekcou.woff2 → 200 (33ms, 5468B)
