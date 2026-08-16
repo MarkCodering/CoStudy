@@ -80,7 +80,7 @@ function SettingsForm({ initial }: { initial: AiSettings }) {
         ))}
       </div>
 
-      <div className="card" style={{ gap: 18, padding: 22 }}>
+      <form className="card" style={{ gap: 18, padding: 22 }} onSubmit={(event) => { event.preventDefault(); save(); }}>
         {!isOllama ? (
           <div className="field">
             <label>{providerName(provider)} API key</label>
@@ -95,7 +95,7 @@ function SettingsForm({ initial }: { initial: AiSettings }) {
                 placeholder={provider === "openai" ? "sk-…" : "sk-ant-…"}
                 aria-label={`${providerName(provider)} API key`}
               />
-              <button className="btn btn-secondary btn-icon" onClick={() => setShowKey((visible) => !visible)} aria-label={showKey ? "Hide API key" : "Show API key"}>
+              <button type="button" className="btn btn-secondary btn-icon" onClick={() => setShowKey((visible) => !visible)} aria-label={showKey ? "Hide API key" : "Show API key"}>
                 {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
@@ -123,8 +123,8 @@ function SettingsForm({ initial }: { initial: AiSettings }) {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <button className="btn btn-primary" onClick={save}>Save settings</button>
-          <button className="btn btn-secondary" onClick={test} disabled={status?.kind === "testing"}>Test connection</button>
+          <button type="submit" className="btn btn-primary">Save settings</button>
+          <button type="button" className="btn btn-secondary" onClick={test} disabled={status?.kind === "testing"}>Test connection</button>
           {status ? (
             <span
               role={status.kind === "error" ? "alert" : "status"}
@@ -135,7 +135,7 @@ function SettingsForm({ initial }: { initial: AiSettings }) {
             </span>
           ) : null}
         </div>
-      </div>
+      </form>
 
       <p style={{ marginTop: 16, fontSize: 11.5, color: "var(--color-neutral-600)", lineHeight: 1.6 }}>
         Browser builds store this configuration in localStorage. The desktop app stores it in its local SQLite database.
