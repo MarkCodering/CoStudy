@@ -1,0 +1,40 @@
+/*
+ * Page-level chrome for the Exam Practice app — ported from the <style>
+ * block inside the mockup's <helmet>. Kept separate from classical.css so
+ * the design-system file stays a clean, swappable port.
+ */
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #f3f2f2;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-accent-700);
+  text-decoration: underline;
+}
+
+@keyframes examPulse {
+  0%, 100% { opacity: .35; }
+  50% { opacity: 1; }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #d7d3d3; border-radius: 6px; }
+
+#exam-practice-root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Rich, KaTeX-rendered prose blocks (question prompts, worked answers). */
+.rich ul { margin: 6px 0 10px 20px; padding: 0; }
+.rich li { margin: 3px 0; }
+.rich p { margin: 0 0 10px; }
+.rich p:last-child { margin-bottom: 0; }
+.rich .katex-display { margin: 14px 0; overflow-x: auto; overflow-y: hidden; }
