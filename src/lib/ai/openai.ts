@@ -6,6 +6,7 @@ import {
   extractionUserPrompt,
   gradeUserPrompt,
   type AiCallOptions,
+  type AiDocument,
   type AiProvider,
   type ExtractedQuestion,
   type GradeSuggestion,
@@ -60,8 +61,11 @@ export function createOpenAiProvider(apiKey: string, model: string): AiProvider 
       }
     },
 
-    async extractQuestions(pdfBase64, fileName, opts) {
+    async extractQuestions(document: AiDocument, opts) {
       try {
+        const fileContent = document.mediaType === "application/pdf"
+          ? { type: "input_file" as const, filename: document.fileName, file_data: `data:application/pdf;base64,${document.base64}` }
+          : { type: "input_image" as const, image_url: `data:${document.mediaType};base64,${document.base64}`, detail: "high" as const };
         const response = await client.responses.create(
           {
             model,
@@ -71,7 +75,7 @@ export function createOpenAiProvider(apiKey: string, model: string): AiProvider 
               {
                 role: "user",
                 content: [
-                  { type: "input_file", filename: fileName, file_data: `data:application/pdf;base64,${pdfBase64}` },
+                  fileContent,
                   { type: "input_text", text: extractionUserPrompt() },
                 ],
               },

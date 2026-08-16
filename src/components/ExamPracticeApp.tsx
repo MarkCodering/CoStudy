@@ -10,6 +10,7 @@ import { GradedScreen } from "@/components/screens/GradedScreen";
 import { WeakScreen } from "@/components/screens/WeakScreen";
 import { PracticeScreen } from "@/components/screens/PracticeScreen";
 import { TimedScreen } from "@/components/screens/TimedScreen";
+import { SettingsScreen } from "@/components/screens/SettingsScreen";
 import { useExamPractice } from "@/hooks/useExamPractice";
 
 export function ExamPracticeApp() {
@@ -38,6 +39,7 @@ export function ExamPracticeApp() {
         {screen === "graded" && <GradedScreen state={state} />}
         {screen === "weak" && <WeakScreen state={state} />}
         {screen === "practice" && <PracticeScreen state={state} />}
+        {screen === "settings" && <SettingsScreen />}
       </main>
     </div>
   );

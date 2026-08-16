@@ -14,6 +14,8 @@ import {
 } from "@/lib/store";
 import type { PaperRecord, QuestionRecord } from "@/lib/models";
 import type { PreviewMode, Screen } from "@/lib/types";
+import { createAiProvider } from "@/lib/ai";
+import { providerName, useAiSettings, useAiSettingsReady } from "@/lib/settings";
 
 export interface QuestionFormState {
   num: string;
@@ -33,6 +35,10 @@ const EMPTY_FORM: QuestionFormState = { num: "", topic: "", marks: "", prompt: "
  */
 export function useExamPractice() {
   const papers = usePapers();
+  const aiSettings = useAiSettings();
+  const aiSettingsReady = useAiSettingsReady();
+  const [aiOperation, setAiOperation] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const [screen, setScreen] = useState<Screen>("library");
   const [activePaperId, setActivePaperId] = useState<string | null>(null);
@@ -65,6 +71,43 @@ export function useExamPractice() {
       go("review");
     },
     [go]
+  );
+
+  const createAndExtract = useCallback(
+    async (input: { title: string; course: string; kind: PaperRecord["kind"]; file: File }) => {
+      setAiOperation("extract");
+      setAiError(null);
+      try {
+        const buffer = new Uint8Array(await input.file.arrayBuffer());
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let offset = 0; offset < buffer.length; offset += chunkSize) {
+          binary += String.fromCharCode(...buffer.subarray(offset, offset + chunkSize));
+        }
+        const questions = await createAiProvider(aiSettings).extractQuestions({
+          base64: btoa(binary),
+          fileName: input.file.name,
+          mediaType: input.file.type || (input.file.name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "image/jpeg"),
+        });
+        if (!questions.length) throw new Error("No questions were found in that file.");
+        const paper = createPaper({ ...input, fileName: input.file.name });
+        for (const [index, question] of questions.entries()) {
+          addQuestion(paper.id, {
+            num: String(question.num || index + 1),
+            topic: String(question.topic || "Untagged"),
+            marks: Math.max(0, Math.round(Number(question.marks) || 0)),
+            prompt: String(question.prompt || ""),
+          });
+        }
+        setActivePaperId(paper.id);
+        go("review");
+      } catch (error) {
+        setAiError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setAiOperation(null);
+      }
+    },
+    [aiSettings, go]
   );
 
   const removePaper = useCallback(
@@ -178,6 +221,45 @@ export function useExamPractice() {
   // the previous marks and gradedAt stamp.
   const reopenMarking = useCallback(() => setRemarking(true), []);
 
+  const suggestGradeWithAi = useCallback(
+    async (q: QuestionRecord) => {
+      setAiOperation(`grade:${q.id}`);
+      setAiError(null);
+      try {
+        const suggestion = await createAiProvider(aiSettings).suggestGrade({ prompt: q.prompt, answer: q.answer, marks: q.marks });
+        setMarkDraft((draft) => ({
+          ...draft,
+          [q.id]: { score: String(suggestion.score), note: suggestion.note },
+        }));
+      } catch (error) {
+        setAiError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setAiOperation(null);
+      }
+    },
+    [aiSettings]
+  );
+
+  const suggestAllGradesWithAi = useCallback(async () => {
+    if (!activePaper) return;
+    setAiOperation("grade-all");
+    setAiError(null);
+    try {
+      const provider = createAiProvider(aiSettings);
+      for (const q of activePaper.questions) {
+        const suggestion = await provider.suggestGrade({ prompt: q.prompt, answer: q.answer, marks: q.marks });
+        setMarkDraft((draft) => ({
+          ...draft,
+          [q.id]: { score: String(suggestion.score), note: suggestion.note },
+        }));
+      }
+    } catch (error) {
+      setAiError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setAiOperation(null);
+    }
+  }, [activePaper, aiSettings]);
+
   // — Timed (exam conditions) —
   const [timedIdx, setTimedIdx] = useState(0);
   const [secs, setSecs] = useState(0);
@@ -223,6 +305,7 @@ export function useExamPractice() {
     setActivePaperId,
     openPaper,
     createAndOpen,
+    createAndExtract,
     removePaper,
     editingQuestionId,
     questionForm,
@@ -243,6 +326,13 @@ export function useExamPractice() {
     setMarkNote,
     saveMarksAction,
     reopenMarking,
+    suggestGradeWithAi,
+    suggestAllGradesWithAi,
+    aiSettingsReady,
+    aiProviderName: providerName(aiSettings.provider),
+    aiOperation,
+    aiError,
+    clearAiError: () => setAiError(null),
     remarking,
     timedIdx,
     setTimedIdx,

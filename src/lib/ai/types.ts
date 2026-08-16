@@ -21,6 +21,12 @@ export interface AiCallOptions {
   signal?: AbortSignal;
 }
 
+export interface AiDocument {
+  base64: string;
+  fileName: string;
+  mediaType: string;
+}
+
 /** Thrown for any provider failure — network, auth, refusal, bad response shape. */
 export class AiError extends Error {
   constructor(message: string, readonly cause?: unknown) {
@@ -34,8 +40,8 @@ export interface AiProvider {
   supportsDocuments: boolean;
   /** A cheap call that only checks the key/model/server are reachable and valid. */
   testConnection(opts?: AiCallOptions): Promise<void>;
-  /** Read a paper (PDF, as base64) and split it into questions. */
-  extractQuestions(pdfBase64: string, fileName: string, opts?: AiCallOptions): Promise<ExtractedQuestion[]>;
+  /** Read a PDF or image paper and split it into questions. */
+  extractQuestions(document: AiDocument, opts?: AiCallOptions): Promise<ExtractedQuestion[]>;
   /** Suggest a score and a short note for one answered question. */
   suggestGrade(input: { prompt: string; answer: string; marks: number }, opts?: AiCallOptions): Promise<GradeSuggestion>;
 }

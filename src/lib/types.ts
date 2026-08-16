@@ -7,7 +7,8 @@ export type Screen =
   | "timed"
   | "graded"
   | "weak"
-  | "practice";
+  | "practice"
+  | "settings";
 
 /** How the answer editor and its rendered preview are arranged in the notebook. */
 export type PreviewMode = "Side by side" | "Below the answer" | "Tabbed";

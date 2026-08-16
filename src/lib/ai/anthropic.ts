@@ -6,6 +6,7 @@ import {
   extractionUserPrompt,
   gradeUserPrompt,
   type AiCallOptions,
+  type AiDocument,
   type AiProvider,
   type ExtractedQuestion,
   type GradeSuggestion,
@@ -72,8 +73,18 @@ export function createAnthropicProvider(apiKey: string, model: string): AiProvid
       }
     },
 
-    async extractQuestions(pdfBase64, fileName, opts) {
+    async extractQuestions(document: AiDocument, opts) {
       try {
+        const source = document.mediaType === "application/pdf"
+          ? { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data: document.base64 } }
+          : {
+              type: "image" as const,
+              source: {
+                type: "base64" as const,
+                media_type: document.mediaType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+                data: document.base64,
+              },
+            };
         const message = await client.messages.create(
           {
             model,
@@ -84,8 +95,8 @@ export function createAnthropicProvider(apiKey: string, model: string): AiProvid
               {
                 role: "user",
                 content: [
-                  { type: "document", source: { type: "base64", media_type: "application/pdf", data: pdfBase64 } },
-                  { type: "text", text: extractionUserPrompt() + ` (source file: ${fileName})` },
+                  source,
+                  { type: "text", text: extractionUserPrompt() + ` (source file: ${document.fileName})` },
                 ],
               },
             ],

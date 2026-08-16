@@ -9,6 +9,7 @@ import {
   ListChecks,
   NotebookPen,
   Sparkles,
+  Settings,
   Timer,
   UploadCloud,
 } from "lucide-react";
@@ -180,6 +181,29 @@ export function Sidebar({ screen, go, papers }: { screen: Screen; go: (s: Screen
           </div>
         ))}
       </nav>
+      <div style={{ padding: "8px 10px 16px", borderTop: "1px solid var(--color-divider)" }}>
+        <button
+          onClick={() => go("settings")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            width: "100%",
+            padding: "8px 12px",
+            border: 0,
+            cursor: "pointer",
+            borderRadius: "var(--radius-md)",
+            font: "inherit",
+            fontSize: 13.5,
+            background: screen === "settings" ? "color-mix(in srgb, var(--color-accent) 13%, transparent)" : "transparent",
+            color: screen === "settings" ? "var(--color-accent-800)" : "var(--color-text)",
+            boxShadow: screen === "settings" ? "inset 2px 0 0 var(--color-accent)" : "none",
+          }}
+        >
+          <Settings size={16} style={{ opacity: 0.75 }} />
+          Settings
+        </button>
+      </div>
     </aside>
   );
 }

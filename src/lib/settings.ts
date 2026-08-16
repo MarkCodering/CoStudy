@@ -107,6 +107,13 @@ export function useAiSettings(): AiSettings {
   return useSyncExternalStore(subscribe, snapshot, serverSnapshot);
 }
 
+export function useAiSettingsReady(): boolean {
+  return useSyncExternalStore(subscribe, () => {
+    ensureHydrated();
+    return ready;
+  }, () => false);
+}
+
 export function getAiSettings(): AiSettings {
   ensureHydrated();
   return settings;
@@ -117,4 +124,10 @@ export function updateAiSettings(patch: Partial<AiSettings>) {
   settings = { ...settings, ...patch };
   persist();
   emit();
+}
+
+export function providerName(provider: AiProviderId): string {
+  if (provider === "openai") return "OpenAI";
+  if (provider === "ollama") return "Ollama";
+  return "Anthropic";
 }

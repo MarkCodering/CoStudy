@@ -8,7 +8,7 @@ import type { PaperKind } from "@/lib/models";
 const KIND_OPTIONS: PaperKind[] = ["Past exam", "Mock"];
 
 export function UploadScreen({ state }: { state: ExamPracticeState }) {
-  const { createAndOpen } = state;
+  const { createAndOpen, createAndExtract, go, aiSettingsReady, aiProviderName, aiOperation, aiError, clearAiError } = state;
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [course, setCourse] = useState("");
@@ -23,8 +23,8 @@ export function UploadScreen({ state }: { state: ExamPracticeState }) {
       </div>
       <h2 style={{ margin: "6px 0 4px", fontWeight: 400, fontSize: 36 }}>Add a paper</h2>
       <p style={{ color: "var(--color-neutral-700)", maxWidth: "56ch", marginBottom: 26 }}>
-        Attach a past or mock exam for reference, then type up its questions yourself in the editor that follows —
-        CoStudy doesn&rsquo;t read PDFs for you, it just gives you a good place to work through one.
+        Attach a past or mock exam and let your chosen AI provider extract its questions, or skip AI and enter them
+        yourself in the editor that follows.
       </p>
 
       <label
@@ -46,7 +46,7 @@ export function UploadScreen({ state }: { state: ExamPracticeState }) {
           {file ? file.name : "Attach a PDF (optional)"}
         </div>
         <div style={{ fontSize: 12.5, color: "var(--color-neutral-600)", marginTop: 4 }}>
-          {file ? "Click to choose a different file" : "Click to choose a file — kept for reference only"}
+          {file ? "Click to choose a different file" : "PDF or image · processed by your selected provider"}
         </div>
         <input
           id="paper-file"
@@ -83,13 +83,40 @@ export function UploadScreen({ state }: { state: ExamPracticeState }) {
             </div>
           </div>
         </div>
-        <button
-          className="btn btn-primary btn-block"
-          disabled={!canCreate}
-          onClick={() => createAndOpen({ title: title.trim(), course: course.trim(), kind, fileName: file?.name })}
-        >
-          Create paper and add questions
-        </button>
+        {aiError ? (
+          <div role="alert" style={{ borderLeft: "2px solid #8d2e25", padding: "8px 12px", fontSize: 12.5, color: "#8d2e25" }}>
+            {aiError}{" "}
+            <button className="btn btn-ghost" style={{ fontSize: 12 }} onClick={() => { clearAiError(); go("settings"); }}>
+              Open settings
+            </button>
+          </div>
+        ) : null}
+        {file ? (
+          <>
+            <button
+              className="btn btn-primary btn-block"
+              disabled={!canCreate || !aiSettingsReady || aiOperation === "extract"}
+              onClick={() => createAndExtract({ title: title.trim(), course: course.trim(), kind, file })}
+            >
+              {aiOperation === "extract" ? "Reading paper…" : `Extract questions with ${aiProviderName}`}
+            </button>
+            <button
+              className="btn btn-secondary btn-block"
+              disabled={!canCreate || aiOperation === "extract"}
+              onClick={() => createAndOpen({ title: title.trim(), course: course.trim(), kind, fileName: file.name })}
+            >
+              Create without AI
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn-primary btn-block"
+            disabled={!canCreate}
+            onClick={() => createAndOpen({ title: title.trim(), course: course.trim(), kind })}
+          >
+            Create paper and add questions
+          </button>
+        )}
       </div>
     </div>
   );

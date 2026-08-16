@@ -6,7 +6,21 @@ import type { ExamPracticeState } from "@/hooks/useExamPractice";
 import { totalMarks as sumMarks } from "@/lib/models";
 
 export function GradedScreen({ state }: { state: ExamPracticeState }) {
-  const { activePaper, go, draftFor, setMarkScore, setMarkNote, saveMarksAction, reopenMarking, remarking } = state;
+  const {
+    activePaper,
+    go,
+    draftFor,
+    setMarkScore,
+    setMarkNote,
+    saveMarksAction,
+    reopenMarking,
+    remarking,
+    suggestGradeWithAi,
+    suggestAllGradesWithAi,
+    aiProviderName,
+    aiOperation,
+    aiError,
+  } = state;
 
   if (!activePaper) {
     return (
@@ -48,9 +62,16 @@ export function GradedScreen({ state }: { state: ExamPracticeState }) {
         </div>
         <h2 style={{ margin: "6px 0 16px", fontWeight: 400, fontSize: 36 }}>Mark your own paper</h2>
         <p style={{ fontSize: 13, color: "var(--color-neutral-700)", maxWidth: "62ch", marginBottom: 26 }}>
-          Score each answer against what you know it should have said, and jot down why marks were lost — that note
-          is what feeds the Weakness page.
+          Review the marks yourself, or ask {aiProviderName} for a first pass. AI suggestions stay editable and are
+          not saved until you choose Save marks.
         </p>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+          <button className="btn btn-secondary" onClick={suggestAllGradesWithAi} disabled={aiOperation !== null}>
+            {aiOperation === "grade-all" ? "Suggesting marks…" : `Suggest all with ${aiProviderName}`}
+          </button>
+          {aiError ? <span role="alert" style={{ fontSize: 12.5, color: "#8d2e25" }}>{aiError}</span> : null}
+        </div>
 
         {activePaper.questions.map((q) => {
           const draft = draftFor(q);
@@ -60,6 +81,10 @@ export function GradedScreen({ state }: { state: ExamPracticeState }) {
                 <span style={{ fontFamily: "var(--font-heading)", fontSize: 17 }}>Question {q.num}</span>
                 <span className="tag tag-outline">{q.topic}</span>
                 <span style={{ fontSize: 11.5, color: "var(--color-neutral-600)" }}>out of {q.marks} marks</span>
+                <span style={{ flex: 1 }} />
+                <button className="btn btn-ghost" style={{ fontSize: 12 }} onClick={() => suggestGradeWithAi(q)} disabled={aiOperation !== null}>
+                  {aiOperation === `grade:${q.id}` ? "Suggesting…" : "Suggest with AI"}
+                </button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                 <div>
